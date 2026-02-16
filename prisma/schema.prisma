@@ -60,14 +60,14 @@ model Product {
   description  String
   price        Float
   comparePrice Float?
-  images       String[]
+  images       String      // JSON string
   brand        String
-  sizes        String[]
+  sizes        String      // JSON string
   colors       Json?       // [{ name: string, hex: string }]
   stockCount   Int         @default(0)
   rating       Float       @default(0)
   reviewCount  Int         @default(0)
-  tags         String[]
+  tags         String      // JSON string
   featured     Boolean     @default(false)
   isNew        Boolean     @default(false)
   categoryId   String

@@ -308,7 +308,9 @@ async function main() {
             create: {
                 ...productData,
                 comparePrice: productData.comparePrice || null,
-                sizes: productData.sizes || [],
+                images: JSON.stringify(productData.images),
+                sizes: JSON.stringify(productData.sizes || []),
+                tags: JSON.stringify(productData.tags || []),
                 featured: productData.featured || false,
                 isNew: productData.isNew || false,
                 categoryId: categories[categorySlug],

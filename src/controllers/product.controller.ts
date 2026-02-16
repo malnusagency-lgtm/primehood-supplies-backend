@@ -26,10 +26,10 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
         if (search) {
             const q = search.toLowerCase();
             where.OR = [
-                { name: { contains: q, mode: "insensitive" } },
-                { description: { contains: q, mode: "insensitive" } },
-                { brand: { contains: q, mode: "insensitive" } },
-                { tags: { hasSome: [q] } },
+                { name: { contains: q } }, // SQLite doesn't support mode: insensitive easily, but we'll try
+                { description: { contains: q } },
+                { brand: { contains: q } },
+                { tags: { contains: q } },
             ];
         }
 
@@ -77,16 +77,16 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
             price: p.price,
             comparePrice: p.comparePrice,
             currency: "KES" as const,
-            images: p.images,
+            images: JSON.parse(p.images),
             category: p.category,
             brand: p.brand,
-            sizes: p.sizes,
+            sizes: JSON.parse(p.sizes),
             colors: p.colors,
             inStock: p.stockCount > 0,
             stockCount: p.stockCount,
             rating: p.rating,
             reviewCount: p.reviewCount,
-            tags: p.tags,
+            tags: JSON.parse(p.tags),
             featured: p.featured,
             isNew: p.isNew,
         }));
@@ -128,16 +128,16 @@ export const getProductBySlug = async (req: Request, res: Response): Promise<voi
             price: product.price,
             comparePrice: product.comparePrice,
             currency: "KES" as const,
-            images: product.images,
+            images: JSON.parse(product.images),
             category: product.category,
             brand: product.brand,
-            sizes: product.sizes,
+            sizes: JSON.parse(product.sizes),
             colors: product.colors,
             inStock: product.stockCount > 0,
             stockCount: product.stockCount,
             rating: product.rating,
             reviewCount: product.reviewCount,
-            tags: product.tags,
+            tags: JSON.parse(product.tags),
             featured: product.featured,
             isNew: product.isNew,
         };
@@ -171,12 +171,12 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
                 description,
                 price,
                 comparePrice,
-                images: images || [],
+                images: JSON.stringify(images || []),
                 brand,
-                sizes: sizes || [],
+                sizes: JSON.stringify(sizes || []),
                 colors: colors || null,
                 stockCount: stockCount || 0,
-                tags: tags || [],
+                tags: JSON.stringify(tags || []),
                 featured: featured || false,
                 isNew: isNew || false,
                 categoryId,
@@ -202,9 +202,16 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
+        const { images, sizes, tags, ...rest } = req.body;
+        const data: any = { ...rest };
+
+        if (images) data.images = JSON.stringify(images);
+        if (sizes) data.sizes = JSON.stringify(sizes);
+        if (tags) data.tags = JSON.stringify(tags);
+
         const product = await prisma.product.update({
             where: { id },
-            data: req.body,
+            data,
             include: { category: true },
         });
 
