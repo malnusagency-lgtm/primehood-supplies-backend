@@ -20,9 +20,16 @@ export const getDashboardStats = async (_req: Request, res: Response): Promise<v
                 _count: { id: true },
             }),
             prisma.order.findMany({
-                take: 7,
+                take: 10,
                 orderBy: { createdAt: "desc" },
-                select: { total: true, createdAt: true },
+                select: {
+                    id: true,
+                    orderNumber: true,
+                    total: true,
+                    status: true,
+                    createdAt: true,
+                    customer: { select: { name: true } },
+                },
             }),
             prisma.orderItem.groupBy({
                 by: ["name"],
@@ -60,6 +67,14 @@ export const getDashboardStats = async (_req: Request, res: Response): Promise<v
             revenueGrowth: 12.5, // Placeholder — would calculate from historical data
             orderGrowth: 8.3,
             recentSales,
+            recentOrders: recentOrders.map((o) => ({
+                id: o.id,
+                orderNumber: o.orderNumber,
+                customer: o.customer.name,
+                date: o.createdAt.toISOString(),
+                total: o.total,
+                status: o.status,
+            })),
             topProducts: topProducts.map((p) => ({
                 name: p.name,
                 sales: p._sum.quantity || 0,
