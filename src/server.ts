@@ -45,16 +45,6 @@ app.get("/api/health", (_req, res) => {
         status: "ok",
         timestamp: new Date().toISOString(),
         environment: env.NODE_ENV,
-        config: {
-            cloudinary: {
-                hasCloudName: !!env.CLOUDINARY_CLOUD_NAME,
-                hasApiKey: !!env.CLOUDINARY_API_KEY,
-                hasApiSecret: !!env.CLOUDINARY_API_SECRET && env.CLOUDINARY_API_SECRET !== "**********",
-            },
-            database: {
-                hasUrl: !!env.DATABASE_URL,
-            }
-        }
     });
 });
 
