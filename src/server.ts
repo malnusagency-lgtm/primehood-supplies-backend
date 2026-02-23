@@ -12,6 +12,7 @@ import categoryRoutes from "./routes/category.routes";
 import orderRoutes from "./routes/order.routes";
 import uploadRoutes from "./routes/upload.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
+import customerRoutes from "./routes/customer.routes";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/customers", customerRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {
