@@ -13,9 +13,6 @@
         "db:generate": "prisma generate",
         "db:studio": "prisma studio"
     },
-    "prisma": {
-        "seed": "tsx prisma/seed.ts"
-    },
     "keywords": [],
     "author": "Primehood Supplies",
     "license": "ISC",
