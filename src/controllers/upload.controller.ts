@@ -50,8 +50,12 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
             width: result.width,
             height: result.height,
         });
-    } catch (error) {
-        console.error("Upload error:", error);
-        res.status(500).json({ error: "Failed to upload image" });
+    } catch (error: any) {
+        console.error("Upload error details:", error);
+        res.status(500).json({
+            error: "Failed to upload image",
+            details: error.message || String(error),
+            code: error.http_code || error.code || 500
+        });
     }
 };
