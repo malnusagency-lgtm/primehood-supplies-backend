@@ -66,6 +66,8 @@ export const getDashboardStats = async (_req: Request, res: Response): Promise<v
             totalCustomers,
             revenueGrowth: 12.5, // Placeholder — would calculate from historical data
             orderGrowth: 8.3,
+            productGrowth: 5.0,
+            customerGrowth: 15.2,
             recentSales,
             recentOrders: recentOrders.map((o) => ({
                 id: o.id,

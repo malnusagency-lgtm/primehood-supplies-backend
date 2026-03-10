@@ -5,6 +5,8 @@ import {
     createOrder,
     updateOrderStatus,
     getOrderById,
+    trackOrder,
+    checkStock,
 } from "../controllers/order.controller";
 import { validate } from "../middleware/validate";
 import { authenticate, requireAdmin } from "../middleware/auth";
@@ -35,8 +37,10 @@ const createOrderSchema = z.object({
     }),
 });
 
-// Public: create order from checkout
+// Public routes
 router.post("/", validate(createOrderSchema), createOrder);
+router.get("/track", trackOrder);
+router.post("/check-stock", checkStock);
 
 // Admin only
 router.get("/", authenticate, requireAdmin, getOrders);

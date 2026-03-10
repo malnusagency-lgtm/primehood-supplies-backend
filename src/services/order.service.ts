@@ -94,4 +94,51 @@ export class OrderService {
             include: { customer: true, items: { include: { product: true } } },
         });
     }
+
+    static async getOrderByNumber(orderNumber: string, email: string) {
+        const order = await prisma.order.findUnique({
+            where: { orderNumber },
+            include: { customer: true, items: { include: { product: true } } },
+        });
+
+        if (!order || order.customer.email.toLowerCase() !== email.toLowerCase()) {
+            return null;
+        }
+
+        return order;
+    }
+
+    static async checkStock(items: { productId: string; quantity: number }[]) {
+        const results: { productId: string; name: string; requested: number; available: number; inStock: boolean }[] = [];
+
+        for (const item of items) {
+            const product = await prisma.product.findUnique({
+                where: { id: item.productId },
+                select: { id: true, name: true, stockCount: true },
+            });
+
+            if (!product) {
+                results.push({
+                    productId: item.productId,
+                    name: "Unknown Product",
+                    requested: item.quantity,
+                    available: 0,
+                    inStock: false,
+                });
+            } else {
+                results.push({
+                    productId: product.id,
+                    name: product.name,
+                    requested: item.quantity,
+                    available: product.stockCount,
+                    inStock: product.stockCount >= item.quantity,
+                });
+            }
+        }
+
+        return {
+            allInStock: results.every((r) => r.inStock),
+            items: results,
+        };
+    }
 }

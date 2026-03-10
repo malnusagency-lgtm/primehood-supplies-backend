@@ -43,3 +43,40 @@ export const getOrderById = async (req: Request, res: Response): Promise<void> =
         res.status(500).json({ error: "Failed to fetch order" });
     }
 };
+
+export const trackOrder = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { orderNumber, email } = req.query;
+        if (!orderNumber || !email) {
+            res.status(400).json({ error: "Order number and email are required" });
+            return;
+        }
+        const order = await OrderService.getOrderByNumber(
+            orderNumber as string,
+            email as string
+        );
+        if (!order) {
+            res.status(404).json({ error: "Order not found. Please check your order number and email." });
+            return;
+        }
+        res.json(order);
+    } catch (error) {
+        console.error("Track order error:", error);
+        res.status(500).json({ error: "Failed to track order" });
+    }
+};
+
+export const checkStock = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { items } = req.body;
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            res.status(400).json({ error: "Items array is required" });
+            return;
+        }
+        const result = await OrderService.checkStock(items);
+        res.json(result);
+    } catch (error) {
+        console.error("Check stock error:", error);
+        res.status(500).json({ error: "Failed to check stock" });
+    }
+};

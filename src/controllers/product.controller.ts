@@ -13,7 +13,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 
 export const getProductBySlug = async (req: Request, res: Response): Promise<void> => {
     try {
-        const product = await ProductService.getProductBySlug(req.params.slug);
+        const product = await ProductService.getProductBySlug(req.params.slug as string);
         if (!product) {
             res.status(404).json({ error: "Product not found" });
             return;
@@ -40,7 +40,7 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
 
 export const updateProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const product = await ProductService.updateProduct(req.params.id, req.body);
+        const product = await ProductService.updateProduct(req.params.id as string, req.body);
         if (!product) {
             res.status(404).json({ error: "Product not found" });
             return;
@@ -54,7 +54,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
 
 export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const success = await ProductService.deleteProduct(req.params.id);
+        const success = await ProductService.deleteProduct(req.params.id as string);
         if (!success) {
             res.status(404).json({ error: "Product not found" });
             return;
