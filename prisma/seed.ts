@@ -321,63 +321,8 @@ async function main() {
     console.log(`\n✅ Seeded ${productCount} products`);
 
     // === 4. Seed sample orders ===
-    const customers = await Promise.all([
-        prisma.customer.upsert({ where: { email: "john@email.com" }, update: {}, create: { name: "John Kamau", email: "john@email.com", phone: "0712 345 678" } }),
-        prisma.customer.upsert({ where: { email: "sarah@email.com" }, update: {}, create: { name: "Sarah Njoroge", email: "sarah@email.com", phone: "0722 111 222" } }),
-        prisma.customer.upsert({ where: { email: "david@email.com" }, update: {}, create: { name: "David Ochieng", email: "david@email.com", phone: "0733 444 555" } }),
-        prisma.customer.upsert({ where: { email: "grace@email.com" }, update: {}, create: { name: "Grace Wanjiku", email: "grace@email.com", phone: "0744 666 777" } }),
-    ]);
-
-    const towns = ["Westlands", "Kilimani", "Karen", "Langata", "Runda"];
-    const statuses = ["DELIVERED", "PROCESSING", "SHIPPED", "PENDING", "DELIVERED", "DELIVERED", "CANCELLED"];
-    
-    let orderCount = 0;
-    
-    // Generate 30 orders over the last 30 days
-    for (let i = 1; i <= 30; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - (30 - i)); // distribute over the last month
-        
-        const c = customers[i % customers.length];
-        const status = statuses[i % statuses.length];
-        
-        const oNum = `PH-2026-${String(i).padStart(3, '0')}`;
-        
-        const q1 = (i % 3) + 1;
-        const q2 = (i % 2) + 1;
-        
-        const t1 = q1 * 15000;
-        const t2 = q2 * 3500;
-        const sub = t1 + t2;
-        
-        await prisma.order.upsert({
-            where: { orderNumber: oNum },
-            update: {},
-            create: {
-                orderNumber: oNum,
-                customerId: c.id,
-                subtotal: sub,
-                vat: sub * 0.16,
-                shipping: 500,
-                total: sub * 1.16 + 500,
-                status: status,
-                paymentMethod: "MPESA",
-                paymentStatus: "PAID",
-                address: `House ${i}, Example Street`,
-                town: towns[i % towns.length],
-                county: "Nairobi",
-                createdAt: date,
-                items: {
-                    create: [
-                        { name: "Adidas Al Rihla Pro Ball", quantity: q1, price: 15000 },
-                        { name: "Training Bibs (Set of 10)", quantity: q2, price: 3500 },
-                    ],
-                },
-            },
-        });
-        orderCount++;
-    }
-    console.log(`✅ Seeded ${orderCount} sample orders with varying dates`);
+    // Removed mock orders for production launch
+    console.log(`\nℹ️  Skipped mock orders for production launch.`);
 
     console.log("\n🎉 Database seeded successfully!\n");
 }
